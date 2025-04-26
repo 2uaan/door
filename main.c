@@ -49,15 +49,44 @@ void setRW(u8 mode);
 void write_byte(u8 data, u8 state);
 void I2C_LCD_send(u8 full_data, int rs);
 void I2C_LCD_init(void);
-void LCD_showtime(unsigned int value, u8 type);
 void display_character(u8 ch, int row, int col);
 void display_string(char* ch, int rowf, int colf);
-
 u8 getkey(void);
+
+void setup_UART(void);
+char read_char(void);
+void reset_UART_FIFO(void);
 
 void delay(int ms){
 	unsigned int i;
-	for (i = 0; i < ms*2100; i++);
+	for (i = 0; i < ms*2500; i++);
+}
+
+void setup_UART(void){											
+	RCGCUART |= (1 << 4);											
+	while((RCGCUART & (1 << 4)) == 0);				
+	RCGCGPIO |= (1 << 2);											
+	while((RCGCGPIO & (1 << 2)) == 0);
+	
+	
+	GPIOAFSEL_C |= (1 << 4);									
+	GPIOPCTL_C |= (1 << 16);									
+	GPIODEN_C |= (1 << 4);										
+
+	UART4CTL &= ~(1 << 0);													
+	UART4IBRD = 104;													
+	UART4FBRD = 11;														
+	UART4LCRH |= (0x3 << 5);									
+	UART4CC = 0x0;														
+	UART4CTL |= (1 << 0) | (1 << 9);					
+}
+
+
+char read_char(void){												
+	char c;
+  while ((UART4FR & (1 << 4)) != 0); 				
+  c = UART4DR & 0xFF; 											
+	return c;																	
 }
 
 /*
@@ -81,41 +110,41 @@ void setup_GPIO(void){
 	
 }
 
-void setup_I2C(void){									//Ham cau hinh I2C module 3
-	RCGCI2C |= (1 << 1);								//Chon module 3 cua I2C
-	while((RCGCI2C & (1 << 1)) == 0);		//Doi bit duoc thiet lap xong
-	RCGCGPIO |= (1 << 0);								//Bit 3 tuong ung voi chan GPIOD
+void setup_I2C(void){									
+	RCGCI2C |= (1 << 1);								
+	while((RCGCI2C & (1 << 1)) == 0);		
+	RCGCGPIO |= (1 << 0);								
 	while((RCGCGPIO & (1 << 0)) == 0);	
 	
-	GPIOAFSEL_A |= (1 << 6) | (1 << 7);	//Bat chuc nang thay the cho chan PD0 va PD1
-	GPIOPCTL_A = (3 << 24) | (3 << 28);		//Dat gia tri byte 0 va byte 1 thanh 3 de chon I2C
-	GPIODEN_A |= (1 << 5) | (1 << 6) | (1 << 7);		//Bat tin hieu digital cho chan PD0 va PD1
-	GPIODIR_A |= (1 << 6) | (1 << 7);		//Dat chan PD0 va PD1 thanh chan OUTPUT
+	GPIOAFSEL_A |= (1 << 6) | (1 << 7);	
+	GPIOPCTL_A = (3 << 24) | (3 << 28);		
+	GPIODEN_A |= (1 << 5) | (1 << 6) | (1 << 7);		
+	GPIODIR_A |= (1 << 6) | (1 << 7);		
 	GPIODIR_A &= ~(1 << 5);
-	GPIOODR_A |= (1 << 7);		//Bat drain control cho chan PD1;
+	GPIOODR_A |= (1 << 7);		
 	GPIOPUR_A = (1<< 5);
 	
-	I2C1_MCR = 0x00;										//Reset gia tri thanh ghi
-	I2C1_MCR |= (1 << 4);								//Thiet lap module la Master
-	I2C1_MTPR = (7 << 0);								//Dua theo cong thuc tu datasheet tinh ra duoc gia tri chu ki SCL
+	I2C1_MCR = 0x00;										
+	I2C1_MCR |= (1 << 4);								
+	I2C1_MTPR = (7 << 0);								
 }
 
-void set_slave_address(u8 slave_address){		//Ham thiet lap dia chi Slave
-	I2C1_MSA = (slave_address << 1);					//Dia chi Slave duoc luu tu bit 1 -> bit 7 trong thanh ghi
+void set_slave_address(u8 slave_address){		
+	I2C1_MSA = (slave_address << 1);					
 }
 
-void setRW(u8 mode){												//Ham thiet lap che do Read/Write
-	if (mode == 0) I2C1_MSA &= ~(1 << 0);			//Gan gia tri tuong ung vao bit 0 cua thanh ghi 
-	else I2C1_MSA |= (1 << 0);								// 0-Transmit va 1-Receive
+void setRW(u8 mode){												
+	if (mode == 0) I2C1_MSA &= ~(1 << 0);			
+	else I2C1_MSA |= (1 << 0);								
 }
 
-void write_byte(u8 data, u8 state){					//Ham gui mot byte - dau vao la data(du lieu) va state(trang thai)
-	I2C1_MDR = data;													//Dua du lieu truyen di vao thanh ghi I2CMDR
-	I2C1_MCS = state;													//Dua cac bit trang thai vao thanh ghi I2CMCS (Start - Run - Stop)
+void write_byte(u8 data, u8 state){					
+	I2C1_MDR = data;													
+	I2C1_MCS = state;													
 	
-	while((I2C1_MCS & (1 << 0)) == 0);				//Kiem tra bit Busy cua thanh ghi I2CMCS
+	while((I2C1_MCS & (1 << 0)) == 0);				
 	
-	if((I2C1_MCS & (1 << 1)) != 0){						//Kiem tra bit loi trong thanh ghi I2CMCS
+	if((I2C1_MCS & (1 << 1)) != 0){						
 		if((I2C1_MCS & (1 << 1)) != 0){
 			
 		}else{
@@ -127,24 +156,24 @@ void write_byte(u8 data, u8 state){					//Ham gui mot byte - dau vao la data(du 
 
 
 /*D1 D2 D3 D4 BL EN RW RS*/
-void I2C_LCD_send(u8 full_data, int rs) {		//Ham gui mot lenh toi I2C LCD
-  u8 	upper = full_data & 0xF0,							//Vi I2C LCD truyen du lieu 4bit nen phai chia du lieu thanh 2 de truyen di
-			lower = (full_data << 4);							// upper(4bit cao) va lower(4bit thap)
+void I2C_LCD_send(u8 full_data, int rs) {		
+  u8 	upper = full_data & 0xF0,							
+			lower = (full_data << 4);							
 	
-	u8 BL, RS, RW, EN, data;									//Khai bao cac bit dieu khien lenh va du lieu truyen di
-	BL = 0x08;																//bit bl su dung de bat/tat den nen cua LCD
-	RS = 0x00 | rs;														//bit rs su dung de chon du lieu gui di command(rs = 0) hay la data(rs = 1) 
-	RW = 0x00;																//bit Read/Write
-	EN = 0x04;																//bit en su dung de xac thuc du lieu
+	u8 BL, RS, RW, EN, data;									
+	BL = 0x08;																
+	RS = 0x00 | rs;														 
+	RW = 0x00;																
+	EN = 0x04;																
 	
-	data = upper | BL | EN | RW | RS;					//Ket hop tat ca de thanh 1 byte hoan chinh co the truyen di
+	data = upper | BL | EN | RW | RS;					
 	
-	write_byte(data, 7);											//Truyen byte do di voi bit en = 1
+	write_byte(data, 7);											
 	delay(5);
-	write_byte(data & ~EN, 7);								//Sau do truyen di voi bit en = 0
-	delay(5);																	// bit en tu 1->0 se co chuc nang giup LCD tiep nhan du lieu
+	write_byte(data & ~EN, 7);								
+	delay(5);																	
 	
-	data = lower | BL | EN | RW | RS;					// Tuong tu voi 4bit thap
+	data = lower | BL | EN | RW | RS;					
 	
 	write_byte(data, 7);
 	delay(5);
@@ -163,17 +192,17 @@ void display_character(u8 ch, int row, int col){
 	delay(2);
 }
 
-void I2C_LCD_init(void) {					//Ham thiet lap LCD
+void I2C_LCD_init(void) {					
     delay(50);
     I2C_LCD_send(0x02, 0);		
 		delay(50);				
-    I2C_LCD_send(0x28, 0);		//Khoi tao LCD o che do 4bit 
+    I2C_LCD_send(0x28, 0);		
 		delay(50);
-    I2C_LCD_send(0x0C, 0); 		//Bat Man hinh - Tat Con Tro
+    I2C_LCD_send(0x0C, 0); 		
 		delay(50);
-    I2C_LCD_send(0x01, 0); 		//Xoa man hinh LCD
+    I2C_LCD_send(0x01, 0); 		
     delay(50);
-    I2C_LCD_send(0x80, 0); 		//Dua con tro ve vi tri dau tien (hang 1 - cot 1)
+    I2C_LCD_send(0x80, 0); 		
     delay(50);
 }
 
@@ -252,12 +281,8 @@ int check_pass(void){
 	return 1;
 }
 
-int main(void){
-    setup_GPIO();
-    setup_I2C();
-    set_slave_address(0x27);
-		setRW(0);
-    I2C_LCD_init();
+void run_keypad(void);
+void run_keypad(void){
 		display_string("Enter passwork: ", 1,1);
 		I2C_LCD_send(0xC0, 0);
 		int count = 0;
@@ -293,10 +318,82 @@ int main(void){
 					}else if(key == '+'){
 						display_character(' ', 2, count);
 						count--;
+					}else if(key == '/') {
+						I2C_LCD_send(0x01, 0);
+						break;
 					}
 				}
 				
 				
         delay(200);
     }
+}
+
+void run_bluetooth(void);
+void run_bluetooth(void){
+	
+	display_string("Bluetooth wait",1,1);
+	display_string("State: close",2,1);
+	char before = '*';
+	while(1){
+		if (before != '*'){
+			if (read_char() != before) {
+				display_string("State: open  ",2,1);
+				delay(3000);
+			}		
+		}
+		display_string("State: close",2,1);
+		
+		before = read_char();
+		
+		char key = getkey();
+		if (key == '/'){
+			I2C_LCD_send(0x01, 0);
+			break;
+		} 
+	}
+	
+	while(1){
+	}
+
+}
+
+int main(void){
+    setup_GPIO();
+    setup_I2C();
+    set_slave_address(0x27);
+		setRW(0);
+    I2C_LCD_init();
+		setup_UART();
+		char num = '.';
+		while(1){
+			display_string("Open the door!!", 1, 1);
+			num = getkey();
+			switch (num){
+				case '+':{
+					I2C_LCD_send(0x01, 0);
+					run_keypad();
+					num = '.';
+					break;
+				}
+				case '-':{
+					I2C_LCD_send(0x01, 0);
+					run_bluetooth();
+					num = '.';
+					break;
+				}
+				default:{
+					display_string("-   ", 2, 1);
+					delay(100);
+					display_string("--  ", 2, 1);
+					delay(100);
+					display_string("--- ", 2, 1);
+					delay(100);
+					display_string("--->", 2, 1);
+					delay(100);
+					break;
+				}
+			}
+			delay(100);
+		}
 }
