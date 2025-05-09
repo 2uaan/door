@@ -3,9 +3,9 @@
 <title>Static Call Graph - [.\Objects\door.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\Objects\door.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 6230001: Last Updated: Sat Apr 26 08:20:59 2025
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 6230001: Last Updated: Wed May  7 23:48:06 2025
 <BR><P>
-<H3>Maximum Stack Usage =        184 bytes + Unknown(Functions without stacksize, Cycles, Untraceable Function Pointers)</H3><H3>
+<H3>Maximum Stack Usage =        192 bytes + Unknown(Functions without stacksize, Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
 __rt_entry_main &rArr; main &rArr; run_keypad &rArr; display_string &rArr; display_character &rArr; I2C_LCD_send &rArr; delay
 <P>
@@ -382,7 +382,7 @@ Global Symbols
 <P><STRONG><a name="[bd]"></a>__rt_entry_postsh_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, __rtentry2.o(.ARM.Collect$$rtentry$$00000009))
 
 <P><STRONG><a name="[83]"></a>__rt_entry_main</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, __rtentry2.o(.ARM.Collect$$rtentry$$0000000D))
-<BR><BR>[Stack]<UL><LI>Max Depth = 184 + Unknown Stack Size
+<BR><BR>[Stack]<UL><LI>Max Depth = 192 + Unknown Stack Size
 <LI>Call Chain = __rt_entry_main &rArr; main &rArr; run_keypad &rArr; display_string &rArr; display_character &rArr; I2C_LCD_send &rArr; delay
 </UL>
 <BR>[Calls]<UL><LI><a href="#[85]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;exit
@@ -1290,7 +1290,6 @@ Global Symbols
 <LI><a href="#[8d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;delay
 </UL>
 <BR>[Called By]<UL><LI><a href="#[84]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
-<LI><a href="#[99]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;run_bluetooth
 <LI><a href="#[98]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;run_keypad
 <LI><a href="#[8c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;I2C_LCD_init
 <LI><a href="#[90]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;display_character
@@ -1319,7 +1318,7 @@ Global Symbols
 <LI><a href="#[8e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;I2C_LCD_send
 </UL>
 
-<P><STRONG><a name="[90]"></a>display_character</STRONG> (Thumb, 78 bytes, Stack size 32 bytes, main.o(.text.display_character))
+<P><STRONG><a name="[90]"></a>display_character</STRONG> (Thumb, 120 bytes, Stack size 32 bytes, main.o(.text.display_character))
 <BR><BR>[Stack]<UL><LI>Max Depth = 72<LI>Call Chain = display_character &rArr; I2C_LCD_send &rArr; delay
 </UL>
 <BR>[Calls]<UL><LI><a href="#[8e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;I2C_LCD_send
@@ -1345,12 +1344,11 @@ Global Symbols
 <BR>[Calls]<UL><LI><a href="#[8d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;delay
 </UL>
 <BR>[Called By]<UL><LI><a href="#[84]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
-<LI><a href="#[99]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;run_bluetooth
 <LI><a href="#[98]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;run_keypad
 </UL>
 
-<P><STRONG><a name="[84]"></a>main</STRONG> (Thumb, 236 bytes, Stack size 40 bytes, main.o(.text.main))
-<BR><BR>[Stack]<UL><LI>Max Depth = 184<LI>Call Chain = main &rArr; run_keypad &rArr; display_string &rArr; display_character &rArr; I2C_LCD_send &rArr; delay
+<P><STRONG><a name="[84]"></a>main</STRONG> (Thumb, 302 bytes, Stack size 40 bytes, main.o(.text.main))
+<BR><BR>[Stack]<UL><LI>Max Depth = 192<LI>Call Chain = main &rArr; run_keypad &rArr; display_string &rArr; display_character &rArr; I2C_LCD_send &rArr; delay
 </UL>
 <BR>[Calls]<UL><LI><a href="#[99]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;run_bluetooth
 <LI><a href="#[98]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;run_keypad
@@ -1358,11 +1356,11 @@ Global Symbols
 <LI><a href="#[92]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;getkey
 <LI><a href="#[8c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;I2C_LCD_init
 <LI><a href="#[8e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;I2C_LCD_send
-<LI><a href="#[96]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;setRW
-<LI><a href="#[95]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;set_slave_address
+<LI><a href="#[97]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;setRW
+<LI><a href="#[96]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;set_slave_address
 <LI><a href="#[94]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;setup_I2C
 <LI><a href="#[93]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;setup_GPIO
-<LI><a href="#[97]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;setup_UART
+<LI><a href="#[95]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;setup_UART
 <LI><a href="#[8d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;delay
 </UL>
 <BR>[Called By]<UL><LI><a href="#[83]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__rt_entry_main
@@ -1374,20 +1372,18 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[99]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;run_bluetooth
 </UL>
 
-<P><STRONG><a name="[99]"></a>run_bluetooth</STRONG> (Thumb, 156 bytes, Stack size 16 bytes, main.o(.text.run_bluetooth))
+<P><STRONG><a name="[99]"></a>run_bluetooth</STRONG> (Thumb, 84 bytes, Stack size 16 bytes, main.o(.text.run_bluetooth))
 <BR><BR>[Stack]<UL><LI>Max Depth = 112<LI>Call Chain = run_bluetooth &rArr; display_string &rArr; display_character &rArr; I2C_LCD_send &rArr; delay
 </UL>
 <BR>[Calls]<UL><LI><a href="#[91]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;display_string
-<LI><a href="#[92]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;getkey
-<LI><a href="#[8e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;I2C_LCD_send
 <LI><a href="#[9a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;read_char
 <LI><a href="#[8d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;delay
 </UL>
 <BR>[Called By]<UL><LI><a href="#[84]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[98]"></a>run_keypad</STRONG> (Thumb, 374 bytes, Stack size 48 bytes, main.o(.text.run_keypad))
-<BR><BR>[Stack]<UL><LI>Max Depth = 144<LI>Call Chain = run_keypad &rArr; display_string &rArr; display_character &rArr; I2C_LCD_send &rArr; delay
+<P><STRONG><a name="[98]"></a>run_keypad</STRONG> (Thumb, 444 bytes, Stack size 56 bytes, main.o(.text.run_keypad))
+<BR><BR>[Stack]<UL><LI>Max Depth = 152<LI>Call Chain = run_keypad &rArr; display_string &rArr; display_character &rArr; I2C_LCD_send &rArr; delay
 </UL>
 <BR>[Calls]<UL><LI><a href="#[9b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;check_pass
 <LI><a href="#[91]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;display_string
@@ -1399,13 +1395,13 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[84]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[96]"></a>setRW</STRONG> (Thumb, 54 bytes, Stack size 4 bytes, main.o(.text.setRW))
+<P><STRONG><a name="[97]"></a>setRW</STRONG> (Thumb, 54 bytes, Stack size 4 bytes, main.o(.text.setRW))
 <BR><BR>[Stack]<UL><LI>Max Depth = 4<LI>Call Chain = setRW
 </UL>
 <BR>[Called By]<UL><LI><a href="#[84]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[95]"></a>set_slave_address</STRONG> (Thumb, 26 bytes, Stack size 4 bytes, main.o(.text.set_slave_address))
+<P><STRONG><a name="[96]"></a>set_slave_address</STRONG> (Thumb, 26 bytes, Stack size 4 bytes, main.o(.text.set_slave_address))
 <BR><BR>[Stack]<UL><LI>Max Depth = 4<LI>Call Chain = set_slave_address
 </UL>
 <BR>[Called By]<UL><LI><a href="#[84]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
@@ -1419,7 +1415,7 @@ Global Symbols
 <BR><BR>[Called By]<UL><LI><a href="#[84]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[97]"></a>setup_UART</STRONG> (Thumb, 196 bytes, Stack size 0 bytes, main.o(.text.setup_UART))
+<P><STRONG><a name="[95]"></a>setup_UART</STRONG> (Thumb, 196 bytes, Stack size 0 bytes, main.o(.text.setup_UART))
 <BR><BR>[Called By]<UL><LI><a href="#[84]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 

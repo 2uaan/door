@@ -97,7 +97,7 @@ char read_char(void){
     c1-B4
     c2-B5
     c3-B6
-    c4-B7
+    c4-A5
 */ 
 void setup_GPIO(void){
 	RCGCGPIO |= (1 << 1);
@@ -183,13 +183,19 @@ void I2C_LCD_send(u8 full_data, int rs) {
 
 
 void display_character(u8 ch, int row, int col){
-	u8 pos = (row == 1) ? 0x80 : 0xC0;
-	pos = pos | (col - 1);
-	
-	I2C_LCD_send(pos, 0);
-	delay(2);
-	I2C_LCD_send(ch, 1);
-	delay(2);
+	u8 pos;
+		
+		if (row == 0) pos = 0x80;
+		else if (row == 1) pos = 0xC0;
+		else if (row == 2) pos = 0x94;
+		else pos = 0xD4;
+		
+		pos = pos + col;
+		
+		I2C_LCD_send(pos, 0);
+		delay(2);
+		I2C_LCD_send(ch, 1);
+		delay(2);
 }
 
 void I2C_LCD_init(void) {					
@@ -320,6 +326,10 @@ void run_keypad(void){
 						count--;
 					}else if(key == '/') {
 						I2C_LCD_send(0x01, 0);
+						display_string("OPEN", 0, 8);
+						display_string("A-By Password", 1, 3);
+						display_string("B-By RFID card", 2, 3);
+						display_string("C-By Bluetooth", 3, 3);
 						break;
 					}
 				}
@@ -333,41 +343,39 @@ void run_bluetooth(void);
 void run_bluetooth(void){
 	
 	display_string("Bluetooth wait",1,1);
-	display_string("State: close",2,1);
 	char before = '*';
-	while(1){
-		if (before != '*'){
-			if (read_char() != before) {
-				display_string("State: open  ",2,1);
-				delay(3000);
-			}		
-		}
-		display_string("State: close",2,1);
-		
-		before = read_char();
-		
-		char key = getkey();
-		if (key == '/'){
-			I2C_LCD_send(0x01, 0);
-			break;
-		} 
-	}
 	
 	while(1){
+		if (before != '*'){
+			if (read_char() != before) {						//Kiem tra neu du lieu nhan thay doi
+												//Bat den
+				delay(3000);													//Delay 3 giay
+			}		
+		}else{
+				
+				delay(1000);
+		}
+												//Tat den
+		before = read_char();
 	}
 
 }
 
+int st = 0;
+
 int main(void){
     setup_GPIO();
     setup_I2C();
+	setup_UART();
     set_slave_address(0x27);
 		setRW(0);
     I2C_LCD_init();
-		setup_UART();
 		char num = '.';
+		display_string("OPEN", 0, 8);
+		display_string("A-By Password", 1, 3);
+		display_string("B-By RFID card", 2, 3);
+		display_string("C-By Bluetooth", 3, 3);
 		while(1){
-			display_string("Open the door!!", 1, 1);
 			num = getkey();
 			switch (num){
 				case '+':{
@@ -383,17 +391,18 @@ int main(void){
 					break;
 				}
 				default:{
-					display_string("-   ", 2, 1);
-					delay(100);
-					display_string("--  ", 2, 1);
-					delay(100);
-					display_string("--- ", 2, 1);
-					delay(100);
-					display_string("--->", 2, 1);
-					delay(100);
+					if(st == 0){
+						display_string("--->", 0, 12);
+						display_string("    ", 0, 4);
+						st = 1;
+					}else{
+						display_string("<---", 0, 4);
+						display_string("    ", 0, 12);
+						st = 0;
+					}
 					break;
 				}
 			}
-			delay(100);
+			delay(200);
 		}
 }
