@@ -335,7 +335,7 @@ void run_keypad(void){
 				}
 				
 				
-        delay(200);
+        delay(1 00);
     }
 }
 
@@ -403,6 +403,6 @@ int main(void){
 					break;
 				}
 			}
-			delay(200);
+			delay(100);
 		}
 }
