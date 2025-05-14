@@ -37,7 +37,7 @@ typedef unsigned char u8;
 #define UART4FR   (*((volatile unsigned long *) 0x40010018))		//Thanh ghi chua cac co trang thai cua module UART
 #define UART4DR   (*((volatile unsigned long *) 0x40010000))	
 
-char pass[6] = "123123";
+char pass[6] = "281004";
 
 void delay(int ms);
 void setup_GPIO(void);
@@ -62,31 +62,31 @@ void delay(int ms){
 	for (i = 0; i < ms*2500; i++);
 }
 
-void setup_UART(void){											
-	RCGCUART |= (1 << 4);											
-	while((RCGCUART & (1 << 4)) == 0);				
-	RCGCGPIO |= (1 << 2);											
+void setup_UART(void){											//Ham cau hinh module UART
+	RCGCUART |= (1 << 4);											//Chon module UART 4
+	while((RCGCUART & (1 << 4)) == 0);				//Cho den khi cau hinh xong
+	RCGCGPIO |= (1 << 2);											//UART4 tuong ung voi chan PC4, PC5 ==> chon Port C
 	while((RCGCGPIO & (1 << 2)) == 0);
 	
 	
-	GPIOAFSEL_C |= (1 << 4);									
-	GPIOPCTL_C |= (1 << 16);									
-	GPIODEN_C |= (1 << 4);										
+	GPIOAFSEL_C |= (1 << 4);									//Bat chuc nang thay the
+	GPIOPCTL_C |= (1 << 16);									//Chon UART la chuc nang thay the cho chan PC4 PC5
+	GPIODEN_C |= (1 << 4);										//Bat Digital cho 2 chan PC4 PC5
 
-	UART4CTL &= ~(1 << 0);													
-	UART4IBRD = 104;													
-	UART4FBRD = 11;														
-	UART4LCRH |= (0x3 << 5);									
-	UART4CC = 0x0;														
-	UART4CTL |= (1 << 0) | (1 << 9);					
+	UART4CTL &= ~(1 << 0);										//Tat module UART de thuc hien cau hinh			
+	UART4IBRD = 104;													//Phan nguyen cua Baud rate duoc tinh theo cong thuc trong datasheet
+	UART4FBRD = 11;														//Phan phan so cua Baud rate duoc tinh theo cong thuc trong datasheet
+	UART4LCRH |= (0x3 << 5);									//Bat che do 8-bits
+	UART4CC = 0x0;														//Lua chon clock he thong
+	UART4CTL |= (1 << 0) | (1 << 9);					//Bat lai module UART, bat che do nhan du lieu 
 }
 
 
-char read_char(void){												
+char read_char(void){												//Ham doc ki tu 
 	char c;
-  while ((UART4FR & (1 << 4)) != 0); 				
-  c = UART4DR & 0xFF; 											
-	return c;																	
+  while ((UART4FR & (1 << 4)) != 0); 				//Cho doi du lieu nhan khong trong
+  c = UART4DR & 0xFF; 											//Lay du lieu tu thanh ghi UARTDR
+	return c;																	//Tra ve du lieu
 }
 
 /*
@@ -220,7 +220,7 @@ u8 getkey(void){
 		if ((GPIODATA_B & 0x10) == 0) key = '1';
     if ((GPIODATA_B & 0x20) == 0) key = '2';
     if ((GPIODATA_B & 0x40) == 0) key = '3';
-    if ((GPIODATA_A & 0x20) == 0) key = '+';
+    if ((GPIODATA_A & 0x20) == 0) key = 'A';
     GPIODATA_B |= 0x0F;
 
     delay(10);
@@ -230,7 +230,7 @@ u8 getkey(void){
 		if ((GPIODATA_B & 0x10) == 0) key = '4';
     if ((GPIODATA_B & 0x20) == 0) key = '5';
     if ((GPIODATA_B & 0x40) == 0) key = '6';
-    if ((GPIODATA_A & 0x20) == 0) key = '-';
+    if ((GPIODATA_A & 0x20) == 0) key = 'B';
     GPIODATA_B |= 0x0F;
 
     delay(10);
@@ -240,17 +240,17 @@ u8 getkey(void){
 		if ((GPIODATA_B & 0x10) == 0) key = '7';
     if ((GPIODATA_B & 0x20) == 0) key = '8';
     if ((GPIODATA_B & 0x40) == 0) key = '9';
-    if ((GPIODATA_A & 0x20) == 0) key = 'x';
+    if ((GPIODATA_A & 0x20) == 0) key = 'C';
     GPIODATA_B |= 0x0F;
 
     delay(10);
 
     GPIODATA_B &= ~0x08;
     GPIODATA_B |= 0x07;
-		if ((GPIODATA_B & 0x10) == 0) key = 'C';
+		if ((GPIODATA_B & 0x10) == 0) key = 'O';
     if ((GPIODATA_B & 0x20) == 0) key = '0';
     if ((GPIODATA_B & 0x40) == 0) key = '=';
-    if ((GPIODATA_A & 0x20) == 0) key = '/';
+    if ((GPIODATA_A & 0x20) == 0) key = 'D';
     GPIODATA_B |= 0x0F;
 
     delay(10);
@@ -263,7 +263,7 @@ void display_string(char* ch, int rowf, int colf){
 		display_character(*temp, rowf, colf);
 		colf++;
 		temp++;
-		if (colf == 17){
+		if (colf == 21){
 			if (rowf == 1){
 				rowf++;
 				colf = 1;
@@ -289,42 +289,55 @@ int check_pass(void){
 
 void run_keypad(void);
 void run_keypad(void){
-		display_string("Enter passwork: ", 1,1);
-		I2C_LCD_send(0xC0, 0);
-		int count = 0;
+		display_string("|-----PASSWORK-----|", 0,0);
+		
+		display_string("<|******|>", 2, 5);
+		int count = 6;
     while(1){
 				char key = getkey();
-				if (count == 6) {
+				if (count == 12) {
 					int result = check_pass();
 					if (result == 0){
 						count = 0;
-						display_string("xxxxxx", 2,1);
+						display_string("xxxxxx", 1,7);
 						delay(200);
-						display_string("      ", 2,1);
+						display_string("      ", 1,7);
 						delay(200);
-						display_string("xxxxxx", 2,1);
+						display_string("xxxxxx", 1,7);
 						delay(200);
-						display_string("      ", 2,1);
+						display_string("      ", 1,7);
 						delay(200);
-						display_string("xxxxxx", 2,1);
+						display_string("xxxxxx", 1,7);
 						delay(200);
-						display_string("      ", 2,1);
+						display_string("      ", 1,7);
 						delay(200);
+						display_string("******", 2,7);
+						count = 6;
 					}else{
-						display_string("Correct", 2, 1);
+						display_string("<Correct.>", 2, 5 );
+						delay(4000);
+						I2C_LCD_send(0x01, 0);
+						display_string("DOOR", 0, 8);
+						display_string("A-By Password", 1, 3);
+						display_string("B-By RFID card", 2, 3);
+						display_string("C-By Bluetooth", 3, 3);
+						break;
 					}
 				}
 				if (key != '.'){
-					if (key == 'C') {
-						count = 0;
-						display_string("      ", 2,1);
+					if (key == 'O') {
+						count = 6;
+						display_string("******", 2,7);
 					}else if((int)key > 47 && (int)key < 58){
-						check[count++] = key;
+						check[count - 6] = key;
+						count++;
 						display_character(key, 2, count);
-					}else if(key == '+'){
-						display_character(' ', 2, count);
-						count--;
-					}else if(key == '/') {
+					}else if(key == 'A'){
+						if (count > 6) {
+							display_character('*', 2, count);
+							count--;
+						}
+					}else if(key == 'D') {
 						I2C_LCD_send(0x01, 0);
 						display_string("OPEN", 0, 8);
 						display_string("A-By Password", 1, 3);
@@ -334,18 +347,19 @@ void run_keypad(void){
 					}
 				}
 				
-				
-        delay(1 00);
+        delay(100);
     }
 }
 
-void run_bluetooth(void);
-void run_bluetooth(void){
+void run_RFID(void);
+void run_RFID(void){
 	
-	display_string("Bluetooth wait",1,1);
+	display_string("|-------CARD-------|", 0,0);
 	char before = '*';
 	
 	while(1){
+		char key = getkey();
+		/*
 		if (before != '*'){
 			if (read_char() != before) {						//Kiem tra neu du lieu nhan thay doi
 												//Bat den
@@ -355,6 +369,52 @@ void run_bluetooth(void){
 				
 				delay(1000);
 		}
+												//Tat den
+		*/
+		
+		if (key != '.'){
+			if(key == 'D') {
+					I2C_LCD_send(0x01, 0);
+					display_string("DOOR", 0, 8);
+					display_string("A-By Password", 1, 3);
+					display_string("B-By RFID card", 2, 3);
+					display_string("C-By Bluetooth", 3, 3);
+					break;
+			}else{
+				display_string("Minh Quan", 2, 1);
+			}
+		}
+		//before = read_char();
+	}
+
+}
+
+void run_bluetooth(void);
+void run_bluetooth(void){
+	
+	display_string("|-----BLUETOOTH----|", 0,0);
+	display_string("CLOSED", 2, 7);
+	char before = '*';
+	
+	while(1){
+		char key = getkey();
+		
+		if (before != '*'){
+			if (read_char() != before) {						//Kiem tra neu du lieu nhan thay doi
+				display_string(" OPEN ", 2, 7);
+				delay(3000);	
+				I2C_LCD_send(0x01, 0);
+				display_string("DOOR", 0, 8);
+				display_string("A-By Password", 1, 3);
+				display_string("B-By RFID card", 2, 3);
+				display_string("C-By Bluetooth", 3, 3);
+				break;
+			}		
+		}else{
+				
+				delay(1000);
+		}
+		display_string("CLOSED", 2, 7);
 												//Tat den
 		before = read_char();
 	}
@@ -371,20 +431,26 @@ int main(void){
 		setRW(0);
     I2C_LCD_init();
 		char num = '.';
-		display_string("OPEN", 0, 8);
+		display_string("DOOR", 0, 8);
 		display_string("A-By Password", 1, 3);
 		display_string("B-By RFID card", 2, 3);
 		display_string("C-By Bluetooth", 3, 3);
 		while(1){
 			num = getkey();
 			switch (num){
-				case '+':{
+				case 'A':{
 					I2C_LCD_send(0x01, 0);
 					run_keypad();
 					num = '.';
 					break;
 				}
-				case '-':{
+				case 'B':{
+					I2C_LCD_send(0x01, 0);
+					run_RFID();
+					num = '.';
+					break;
+				}
+				case 'C':{
 					I2C_LCD_send(0x01, 0);
 					run_bluetooth();
 					num = '.';
