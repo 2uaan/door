@@ -1,6 +1,6 @@
 typedef unsigned char u8;
 
-#define RCGCGPIO (*((volatile unsigned long *)0x400FE608))
+
 #define RCGCI2C  (*((volatile unsigned long *)0x400FE620))
 #define RCGCUART (*((volatile unsigned long *) 0x400FE618))			//Thanh ghi chon module UART
 
@@ -8,19 +8,20 @@ typedef unsigned char u8;
 #define GPIODIR_B  (*((volatile unsigned long *)0x40005400))
 #define GPIODATA_B (*((volatile unsigned long *)0x400053FC))
 #define GPIOPUR_B  (*((volatile unsigned long *)0x40005510))
-	
-#define GPIOAFSEL_A (*((volatile unsigned long *)0x40004420))  //Thanh ghi bat chuc nang thay the cho chan GPIOD
-#define GPIOPCTL_A  (*((volatile unsigned long *)0x4000452C))  //Thanh ghi chon chuc nang thay the cho chan GPIOD
-#define GPIODIR_A   (*((volatile unsigned long *)0x40004400))  //Thanh ghi set chuc nang input/output cho chan GPIOD
-#define GPIODEN_A   (*((volatile unsigned long *)0x4000451C))	 //Thanh ghi bat che do tin hieu digital cho chan GPIOD
-#define GPIODATA_A  (*((volatile unsigned long *)0x400043FC))	 //Thanh ghi chua du lieu chan GPIOD
-#define GPIOODR_A   (*((volatile unsigned long *)0x4000450C))  //Thanh ghi bat drain control cho chan GPIOD
-#define GPIOPUR_A  (*((volatile unsigned long *)0x40004510))
 
-#define I2C1_MCR  (*((volatile unsigned long *)0x40021020))		//Thanh ghi cau hinh che do Master/Slave
-#define I2C1_MTPR (*((volatile unsigned long *)0x4002100C))		//Thanh ghi thiet lap chu ki cho SCL
-#define I2C1_MSA  (*((volatile unsigned long *)0x40021000))		//Thanh ghi chua dia chi Slave va bit R/W
-#define I2C1_MDR  (*((volatile unsigned long *)0x40021008))		//Thanh ghi chua du lieu
+#define RCGCGPIO    (*((volatile unsigned long *)0x400FE608))
+#define GPIOAFSEL_A (*((volatile unsigned long *)0x40004420))  
+#define GPIOPCTL_A  (*((volatile unsigned long *)0x4000452C))  
+#define GPIODIR_A   (*((volatile unsigned long *)0x40004400))  
+#define GPIODEN_A   (*((volatile unsigned long *)0x4000451C))	 
+#define GPIODATA_A  (*((volatile unsigned long *)0x400043FC))	 
+#define GPIOODR_A   (*((volatile unsigned long *)0x4000450C))  
+#define GPIOPUR_A  	(*((volatile unsigned long *)0x40004510))
+
+#define I2C1_MCR  (*((volatile unsigned long *)0x40021020))		
+#define I2C1_MTPR (*((volatile unsigned long *)0x4002100C))		
+#define I2C1_MSA  (*((volatile unsigned long *)0x40021000))		
+#define I2C1_MDR  (*((volatile unsigned long *)0x40021008))		
 #define I2C1_MCS  (*((volatile unsigned long *)0x40021004))	
 	
 #define GPIOAFSEL_C (*((volatile unsigned long *) 0x40006420))	//Thanh ghi bat chuc nang thay the cho chan GPIO
@@ -29,15 +30,15 @@ typedef unsigned char u8;
 #define GPIODIR_C   (*((volatile unsigned long *) 0x40006400))	//Thanh ghi cau hinh Input/Output cho chan GPIO
 #define GPIODATA_C  (*((volatile unsigned long *) 0x400063FC))	//Thanh ghi chua du lieu cua chan GPIO
 
-#define UART4CTL  (*((volatile unsigned long *) 0x40010030))		//Thanh ghi chua cac bit dieu khien UART
-#define UART4IBRD (*((volatile unsigned long *) 0x40010024))		//Thanh ghi chua phan nguyen cua Baud rate
-#define UART4FBRD (*((volatile unsigned long *) 0x40010028))		//Thanh ghi chua phan phan so cua Baud rate
-#define UART4LCRH (*((volatile unsigned long *) 0x4001002C))		//Thanh ghi thiet lap du lieu (do dai, stop bit, parity, . . .)
-#define UART4CC   (*((volatile unsigned long *) 0x40010FC8))		//Thanh ghi kiem soat nguon xung cho module UART
-#define UART4FR   (*((volatile unsigned long *) 0x40010018))		//Thanh ghi chua cac co trang thai cua module UART
+#define UART4CTL  (*((volatile unsigned long *) 0x40010030))		
+#define UART4IBRD (*((volatile unsigned long *) 0x40010024))		
+#define UART4FBRD (*((volatile unsigned long *) 0x40010028))		
+#define UART4LCRH (*((volatile unsigned long *) 0x4001002C))		
+#define UART4CC   (*((volatile unsigned long *) 0x40010FC8))		
+#define UART4FR   (*((volatile unsigned long *) 0x40010018))		
 #define UART4DR   (*((volatile unsigned long *) 0x40010000))	
 
-char pass[6] = "281004";
+char pass[6] = "555555";
 
 void delay(int ms);
 void setup_GPIO(void);
@@ -71,8 +72,10 @@ void setup_UART(void){											//Ham cau hinh module UART
 	
 	GPIOAFSEL_C |= (1 << 4);									//Bat chuc nang thay the
 	GPIOPCTL_C |= (1 << 16);									//Chon UART la chuc nang thay the cho chan PC4 PC5
-	GPIODEN_C |= (1 << 4);										//Bat Digital cho 2 chan PC4 PC5
-
+	GPIODEN_C |= (1 << 4) | (1 << 5);					//Bat Digital cho 2 chan PC4 PC5
+	GPIODIR_C |= (1 << 5);
+	
+	
 	UART4CTL &= ~(1 << 0);										//Tat module UART de thuc hien cau hinh			
 	UART4IBRD = 104;													//Phan nguyen cua Baud rate duoc tinh theo cong thuc trong datasheet
 	UART4FBRD = 11;														//Phan phan so cua Baud rate duoc tinh theo cong thuc trong datasheet
@@ -212,50 +215,50 @@ void I2C_LCD_init(void) {
     delay(50);
 }
 
-u8 getkey(void){
-	u8 key = '.';
-    unsigned int i;
-    GPIODATA_B &= ~0x01;
-    GPIODATA_B |= 0x0E;
-		if ((GPIODATA_B & 0x10) == 0) key = '1';
-    if ((GPIODATA_B & 0x20) == 0) key = '2';
-    if ((GPIODATA_B & 0x40) == 0) key = '3';
-    if ((GPIODATA_A & 0x20) == 0) key = 'A';
-    GPIODATA_B |= 0x0F;
+								u8 getkey(void){
+									u8 key = '.';
+										unsigned int i;
+										GPIODATA_B &= ~0x01;
+										GPIODATA_B |= 0x0E;
+										if ((GPIODATA_B & 0x10) == 0) key = '1';
+										if ((GPIODATA_B & 0x20) == 0) key = '2';
+										if ((GPIODATA_B & 0x40) == 0) key = '3';
+										if ((GPIODATA_A & 0x20) == 0) key = 'A';
+										GPIODATA_B |= 0x0F;
 
-    delay(10);
+										delay(10);
 
-    GPIODATA_B &= ~0x02;
-    GPIODATA_B |= 0x0D;
-		if ((GPIODATA_B & 0x10) == 0) key = '4';
-    if ((GPIODATA_B & 0x20) == 0) key = '5';
-    if ((GPIODATA_B & 0x40) == 0) key = '6';
-    if ((GPIODATA_A & 0x20) == 0) key = 'B';
-    GPIODATA_B |= 0x0F;
+										GPIODATA_B &= ~0x02;
+										GPIODATA_B |= 0x0D;
+										if ((GPIODATA_B & 0x10) == 0) key = '4';
+										if ((GPIODATA_B & 0x20) == 0) key = '5';
+										if ((GPIODATA_B & 0x40) == 0) key = '6';
+										if ((GPIODATA_A & 0x20) == 0) key = 'B';
+										GPIODATA_B |= 0x0F;
 
-    delay(10);
+										delay(10);
 
-    GPIODATA_B &= ~0x04;
-    GPIODATA_B |= 0x0B;
-		if ((GPIODATA_B & 0x10) == 0) key = '7';
-    if ((GPIODATA_B & 0x20) == 0) key = '8';
-    if ((GPIODATA_B & 0x40) == 0) key = '9';
-    if ((GPIODATA_A & 0x20) == 0) key = 'C';
-    GPIODATA_B |= 0x0F;
+										GPIODATA_B &= ~0x04;
+										GPIODATA_B |= 0x0B;
+										if ((GPIODATA_B & 0x10) == 0) key = '7';
+										if ((GPIODATA_B & 0x20) == 0) key = '8';
+										if ((GPIODATA_B & 0x40) == 0) key = '9';
+										if ((GPIODATA_A & 0x20) == 0) key = 'C';
+										GPIODATA_B |= 0x0F;
 
-    delay(10);
+										delay(10);
 
-    GPIODATA_B &= ~0x08;
-    GPIODATA_B |= 0x07;
-		if ((GPIODATA_B & 0x10) == 0) key = 'O';
-    if ((GPIODATA_B & 0x20) == 0) key = '0';
-    if ((GPIODATA_B & 0x40) == 0) key = '=';
-    if ((GPIODATA_A & 0x20) == 0) key = 'D';
-    GPIODATA_B |= 0x0F;
+										GPIODATA_B &= ~0x08;
+										GPIODATA_B |= 0x07;
+										if ((GPIODATA_B & 0x10) == 0) key = 'O';
+										if ((GPIODATA_B & 0x20) == 0) key = '0';
+										if ((GPIODATA_B & 0x40) == 0) key = '=';
+										if ((GPIODATA_A & 0x20) == 0) key = 'D';
+										GPIODATA_B |= 0x0F;
 
-    delay(10);
-	return key;
-}
+										delay(10);
+									return key;
+								}
 
 void display_string(char* ch, int rowf, int colf){
 	char *temp = ch;
@@ -289,7 +292,7 @@ int check_pass(void){
 
 void run_keypad(void);
 void run_keypad(void){
-		display_string("|-----PASSWORK-----|", 0,0);
+		display_string("|-----PASSWORD-----|", 0,0);
 		
 		display_string("<|******|>", 2, 5);
 		int count = 6;
@@ -315,7 +318,9 @@ void run_keypad(void){
 						count = 6;
 					}else{
 						display_string("<Correct.>", 2, 5 );
+						GPIODATA_C |= (1 << 5);
 						delay(4000);
+						GPIODATA_C &= ~(1 << 5);
 						I2C_LCD_send(0x01, 0);
 						display_string("DOOR", 0, 8);
 						display_string("A-By Password", 1, 3);
@@ -351,7 +356,9 @@ void run_keypad(void){
     }
 }
 
+
 void run_RFID(void);
+/*
 void run_RFID(void){
 	
 	display_string("|-------CARD-------|", 0,0);
@@ -359,7 +366,7 @@ void run_RFID(void){
 	
 	while(1){
 		char key = getkey();
-		/*
+		
 		if (before != '*'){
 			if (read_char() != before) {						//Kiem tra neu du lieu nhan thay doi
 												//Bat den
@@ -370,7 +377,7 @@ void run_RFID(void){
 				delay(1000);
 		}
 												//Tat den
-		*/
+		
 		
 		if (key != '.'){
 			if(key == 'D') {
@@ -388,6 +395,7 @@ void run_RFID(void){
 	}
 
 }
+*/
 
 void run_bluetooth(void);
 void run_bluetooth(void){
@@ -402,7 +410,9 @@ void run_bluetooth(void){
 		if (before != '*'){
 			if (read_char() != before) {						//Kiem tra neu du lieu nhan thay doi
 				display_string(" OPEN ", 2, 7);
-				delay(3000);	
+				GPIODATA_C |= (1 << 5);
+				delay(4000);
+				GPIODATA_C &= ~(1 << 5);
 				I2C_LCD_send(0x01, 0);
 				display_string("DOOR", 0, 8);
 				display_string("A-By Password", 1, 3);
@@ -426,7 +436,7 @@ int st = 0;
 int main(void){
     setup_GPIO();
     setup_I2C();
-	setup_UART();
+		setup_UART();
     set_slave_address(0x27);
 		setRW(0);
     I2C_LCD_init();
