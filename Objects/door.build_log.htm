@@ -1,0 +1,177 @@
+<html>
+<body>
+<pre>
+<h1>µVision Build Log</h1>
+<h2>Tool Versions:</h2>
+IDE-Version: µVision V5.38.0.0
+Copyright (C) 2022 ARM Ltd and ARM Germany GmbH. All rights reserved.
+License Information: tran quan, ads, LIC=----
+ 
+Tool Versions:
+Toolchain:       MDK-Lite  Version: 5.42.0.0
+Toolchain Path:  C:\Users\tlmqu\AppData\Local\Keil_v5\ARM\ARMCLANG\Bin
+C Compiler:      ArmClang.exe V6.23
+Assembler:       Armasm.exe V6.23
+Linker/Locator:  ArmLink.exe V6.23
+Library Manager: ArmAr.exe V6.23
+Hex Converter:   FromElf.exe V6.23
+CPU DLL:         SARMCM3.DLL V5.42.0.0
+Dialog DLL:      DCM.DLL V1.17.5.0
+Target DLL:      lmidk-agdi.dll V???
+Dialog DLL:      TCM.DLL V1.56.6.0
+ 
+<h2>Project:</h2>
+C:\Users\tlmqu\OneDrive\Documents\Semester2_24_25\Embedded_systems_programming\LearnCode\Keli\TM4123_project\door_open\door.uvprojx
+Project File Date:  11/21/2025
+
+<h2>Output:</h2>
+*** Using Compiler 'V6.23', folder: 'C:\Users\tlmqu\AppData\Local\Keil_v5\ARM\ARMCLANG\Bin'
+Build target 'Target 1'
+main.c(10): warning: // comments are not allowed in this language [-Wcomment]
+   10 | #define GPIODEN_C   (*((volatile unsigned long *) 0x4000651C))  //Thanh ghi bat che do Digital cho chan GPIO
+      |                                                                 ^
+main.c(75): warning: variable declaration in for loop is a C99-specific feature [-Wc99-extensions]
+   75 |     for(unsigned int i = 0; i < length; i++)
+      |         ^
+main.c(75): warning: GCC does not allow variable declarations in for loop initializers before C99 [-Wgcc-compat]
+main.c(98): warning: variable declaration in for loop is a C99-specific feature [-Wc99-extensions]
+   98 |         for(int b = 0; b < 4; b++)
+      |             ^
+main.c(98): warning: GCC does not allow variable declarations in for loop initializers before C99 [-Wgcc-compat]
+main.c(100): warning: implicit conversion changes signedness: 'int' to 'unsigned int' [-Wsign-conversion]
+  100 |             if(i + b < length)
+      |                  ~ ^
+main.c(101): warning: implicit conversion changes signedness: 'int' to 'unsigned int' [-Wsign-conversion]
+  101 |                 ((unsigned char*)&word)[b] = data[i + b];
+      |                                                     ~ ^
+main.c(120): warning: comparison of integers of different signs: 'unsigned int' and 'int' [-Wsign-compare]
+  120 |         for (i = 0; i < ms*2500; i++);
+      |                     ~ ^ ~~~~~~~
+main.c(145): warning: implicit conversion changes signedness: 'int' to 'unsigned long' [-Wsign-conversion]
+  145 |         GPIODIR_E &= ~0x1E;
+      |                   ~~ ^~~~~
+main.c(137): warning: while loop has empty body [-Wempty-body]
+  137 |         while ((RCGCGPIO & (1 << 2)) == 0); 
+      |                                           ^
+main.c(137): note: put the semicolon on a separate line to silence this warning
+main.c(167): warning: implicit conversion changes signedness: 'int' to 'unsigned long' [-Wsign-conversion]
+  167 |         I2C3_MSA = (slave_address << 1);                                        
+      |                  ~  ~~~~~~~~~~~~~~^~~~
+main.c(171): warning: implicit conversion changes signedness: 'int' to 'unsigned long' [-Wsign-conversion]
+  171 |         if (mode == 0) I2C3_MSA &= ~(1 << 0);                   
+      |                                 ~~ ^~~~~~~~~
+main.c(194): warning: implicit conversion loses integer precision: 'int' to 'u8' (aka 'unsigned char') [-Wimplicit-int-conversion]
+  194 |                         lower = (full_data << 4);                                                       
+      |                         ~~~~~    ~~~~~~~~~~^~~~
+main.c(198): warning: implicit conversion loses integer precision: 'int' to 'u8' (aka 'unsigned char') [-Wimplicit-int-conversion]
+  198 |         RS = 0x00 | rs;                                                                                                          
+      |            ~ ~~~~~^~~~
+main.c(226): warning: implicit conversion loses integer precision: 'int' to 'u8' (aka 'unsigned char') [-Wimplicit-int-conversion]
+  226 |                 pos = pos + col;
+      |                     ~ ~~~~^~~~~
+main.c(339): warning: mixing declarations and code is a C99 extension [-Wdeclaration-after-statement]
+  339 |         int count = 6;
+      |             ^
+main.c(376): warning: mixing declarations and code is a C99 extension [-Wdeclaration-after-statement]
+  376 |                                         int result = check_pass(check);
+      |                                             ^
+main.c(370): warning: mixing declarations and code is a C99 extension [-Wdeclaration-after-statement]
+  370 |         int count_error = 0;
+      |             ^
+main.c(370): warning: unused variable 'count_error' [-Wunused-variable]
+  370 |         int count_error = 0;
+      |             ^~~~~~~~~~~
+main.c(431): warning: implicit conversion changes signedness: 'int' to 'unsigned long' [-Wsign-conversion]
+  431 |                                                 GPIODATA_C &= ~(1 << 5);
+      |                                                            ~~ ^~~~~~~~~
+main.c(422): warning: mixing declarations and code is a C99 extension [-Wdeclaration-after-statement]
+  422 |                                         int result = check_pass(check);
+      |                                             ^
+main.c(413): warning: mixing declarations and code is a C99 extension [-Wdeclaration-after-statement]
+  413 |                 char num = '.';
+      |                      ^
+main.c(413): warning: unused variable 'num' [-Wunused-variable]
+  413 |                 char num = '.';
+      |                      ^~~
+main.c(51): warning: no previous extern declaration for non-static variable 'read_pw' [-Wmissing-variable-declarations]
+   51 | char read_pw[6];
+      |      ^
+main.c(51): note: declare 'static' if the variable is not intended to be used outside of this translation unit
+   51 | char read_pw[6];
+      | ^
+main.c(323): warning: no previous extern declaration for non-static variable 'check' [-Wmissing-variable-declarations]
+  323 | char check[6];
+      |      ^
+main.c(323): note: declare 'static' if the variable is not intended to be used outside of this translation unit
+  323 | char check[6];
+      | ^
+main.c(77): warning: unsafe buffer access [-Wunsafe-buffer-usage]
+   77 |         buffer[i] = ptr[i];
+      |         ^~~~~~
+main.c(77): warning: unsafe buffer access [-Wunsafe-buffer-usage]
+   77 |         buffer[i] = ptr[i];
+      |                     ^~~
+main.c(101): warning: unsafe buffer access [-Wunsafe-buffer-usage]
+  101 |                 ((unsigned char*)&word)[b] = data[i + b];
+      |                 ^~~~~~~~~~~~~~~~~~~~~~~
+main.c(101): warning: unsafe buffer access [-Wunsafe-buffer-usage]
+  101 |                 ((unsigned char*)&word)[b] = data[i + b];
+      |                                              ^~~~
+main.c(313): warning: unsafe pointer arithmetic [-Wunsafe-buffer-usage]
+  313 |                 temp++;
+      |                 ^~~~
+main.c(327): warning: unsafe buffer access [-Wunsafe-buffer-usage]
+  327 |         for (i = 0; i< 6; i++) check[i] = ' ';
+      |                                ^~~~~
+main.c(332): warning: unsafe buffer access [-Wunsafe-buffer-usage]
+  332 |         for (i = 0; i< 6; i++) if (read_pw[i] != fl_pass[i]) return 0;
+      |                                    ^~~~~~~
+main.c(332): warning: unsafe buffer access [-Wunsafe-buffer-usage]
+  332 |         for (i = 0; i< 6; i++) if (read_pw[i] != fl_pass[i]) return 0;
+      |                                                  ^~~~~~~
+main.c(353): warning: unsafe buffer access [-Wunsafe-buffer-usage]
+  353 |                                                 new_pass[count - 6] = key;
+      |                                                 ^~~~~~~~
+main.c(393): warning: unsafe buffer access [-Wunsafe-buffer-usage]
+  393 |                                                 check[count - 6] = key;
+      |                                                 ^~~~~
+main.c(443): warning: unsafe buffer access [-Wunsafe-buffer-usage]
+  443 |                                                 check[count - 6] = key;
+      |                                                 ^~~~~
+36 warnings generated.
+compiling main.c...
+linking...
+Program Size: Code=3998 RO-data=730 RW-data=0 ZI-data=624  
+".\Objects\door.axf" - 0 Error(s), 36 Warning(s).
+
+<h2>Software Packages used:</h2>
+
+Package Vendor: ARM
+                http://www.keil.com/pack/ARM.CMSIS.5.9.0.pack
+                ARM.CMSIS.5.9.0
+                CMSIS (Common Microcontroller Software Interface Standard)
+   * Component: CORE Version: 5.6.0
+
+Package Vendor: Keil
+                http://www.keil.com/pack/Keil.TM4C_DFP.1.1.0.pack
+                Keil.TM4C_DFP.1.1.0
+                Texas Instruments Tiva C Series Device Support and Examples
+   * Component: Startup Version: 1.0.1
+
+<h2>Collection of Component include folders:</h2>
+  ./RTE/_Target_1
+  C:/Users/tlmqu/AppData/Local/Arm/Packs/ARM/CMSIS/5.9.0/CMSIS/Core/Include
+  C:/Users/tlmqu/AppData/Local/Arm/Packs/Keil/TM4C_DFP/1.1.0/Device/Include/TM4C123
+
+<h2>Collection of Component Files used:</h2>
+
+   * Component: ARM::CMSIS:CORE:5.6.0
+
+   * Component: Keil::Device:Startup:1.0.1
+      Source file:   Device/Source/ARM/startup_TM4C123.s
+      Include file:  Device/Include/TM4C123/TM4C123.h
+      Source file:   Device/Source/system_TM4C123.c
+Build Time Elapsed:  00:00:00
+</pre>
+</body>
+</html>
