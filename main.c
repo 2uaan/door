@@ -11,7 +11,10 @@ typedef unsigned char u8;
 #define GPIODEN_C   (*((volatile unsigned long *) 0x4000651C))	
 #define GPIODIR_C   (*((volatile unsigned long *) 0x40006400))	
 #define GPIODATA_C  (*((volatile unsigned long *) 0x400063FC))
-
+	
+#define GPIODEN_B   (*((volatile unsigned long *) 0x4000551C))	
+#define GPIODIR_B   (*((volatile unsigned long *) 0x40005400))	
+#define GPIODATA_B  (*((volatile unsigned long *) 0x400053FC))
 	
 #define RCGCI2C  	(*((volatile unsigned long *)0x400FE620))
 #define I2C3_MCR  (*((volatile unsigned long *)0x40023020))		
@@ -145,9 +148,15 @@ void setup_GPIO(void){
   
 	RCGCGPIO |= (1 << 4);
 	while ((RCGCGPIO & (1 << 4)) == 0);
-	GPIODEN_E |=  0x1E;
-	GPIODIR_E &= ~0x1E;
-	GPIOPUR_E |= 0x1E;
+	GPIODEN_E |=  (1 << 1) | (1 << 2) | (1 << 3) | (1 << 4);
+	GPIODIR_E &= ~((1 << 1) | (1 << 2) | (1 << 3) | (1 << 4));
+	GPIOPUR_E |= (1 << 1) | (1 << 2) | (1 << 3) | (1 << 4);
+	
+	RCGCGPIO |= (1 << 1);
+	while ((RCGCGPIO & (1 << 1)) == 0);
+	GPIODEN_B |= (1 << 2) | (1 << 3);
+	GPIODIR_B |= (1 << 2) | (1 << 3);
+	GPIODATA_B = 0x00;
 }
 
 void setup_I2C(void){									
@@ -414,6 +423,8 @@ void new_pass(void){
     }
 }
 
+
+
 void change_pass(void){
 	display_string("|---OLD-PASS---|", 0, 0);
 	display_string("<B> <......>  ", 1, 0);
@@ -477,9 +488,9 @@ int main(void){
 						count = 6;
 					}else{
 						display_string("<------>", 1, 4 );
-						GPIODATA_C |= (1 << 5);
+						GPIODATA_B |= (1 << 2)| (1 << 3);
 						delay(4000);
-						GPIODATA_C &= ~(1 << 5);
+						GPIODATA_B = 0x00;
 						display_string("<......>", 1, 4);
 						count = 6;
 					}

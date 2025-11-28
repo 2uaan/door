@@ -27,116 +27,9 @@ Project File Date:  11/21/2025
 <h2>Output:</h2>
 *** Using Compiler 'V6.23', folder: 'C:\Users\tlmqu\AppData\Local\Keil_v5\ARM\ARMCLANG\Bin'
 Build target 'Target 1'
-main.c(3): warning: // comments are not allowed in this language [-Wcomment]
-    3 | //------------------------------------------------------------------------------------------
-      | ^
-main.c(55): warning: no previous extern declaration for non-static variable 'count' [-Wmissing-variable-declarations]
-   55 | int count = 6;
-      |     ^
-main.c(55): note: declare 'static' if the variable is not intended to be used outside of this translation unit
-   55 | int count = 6;
-      | ^
-main.c(82): warning: variable declaration in for loop is a C99-specific feature [-Wc99-extensions]
-   82 |     for(unsigned int i = 0; i < length; i++){
-      |         ^
-main.c(82): warning: GCC does not allow variable declarations in for loop initializers before C99 [-Wgcc-compat]
-main.c(101): warning: variable declaration in for loop is a C99-specific feature [-Wc99-extensions]
-  101 |         for(int b = 0; b < 4; b++){
-      |             ^
-main.c(101): warning: GCC does not allow variable declarations in for loop initializers before C99 [-Wgcc-compat]
-main.c(102): warning: implicit conversion changes signedness: 'int' to 'unsigned int' [-Wsign-conversion]
-  102 |             if(i + b < length)
-      |                  ~ ^
-main.c(103): warning: implicit conversion changes signedness: 'int' to 'unsigned int' [-Wsign-conversion]
-  103 |                 ((unsigned char*)&word)[b] = data[i + b];
-      |                                                     ~ ^
-main.c(120): warning: comparison of integers of different signs: 'unsigned int' and 'int' [-Wsign-compare]
-  120 |         for (i = 0; i < ms*2500; i++);
-      |                     ~ ^ ~~~~~~~
-main.c(148): warning: implicit conversion changes signedness: 'int' to 'unsigned long' [-Wsign-conversion]
-  148 |         GPIODIR_E &= ~0x1E;
-      |                   ~~ ^~~~~
-main.c(140): warning: while loop has empty body [-Wempty-body]
-  140 |         while ((RCGCGPIO & (1 << 2)) == 0); 
-      |                                           ^
-main.c(140): note: put the semicolon on a separate line to silence this warning
-main.c(172): warning: implicit conversion changes signedness: 'int' to 'unsigned long' [-Wsign-conversion]
-  172 |         I2C3_MSA = (slave_address << 1);                                        
-      |                  ~  ~~~~~~~~~~~~~~^~~~
-main.c(176): warning: implicit conversion changes signedness: 'int' to 'unsigned long' [-Wsign-conversion]
-  176 |         if (mode == 0) I2C3_MSA &= ~(1 << 0);                   
-      |                                 ~~ ^~~~~~~~~
-main.c(199): warning: implicit conversion loses integer precision: 'int' to 'u8' (aka 'unsigned char') [-Wimplicit-int-conversion]
-  199 |                         lower = (full_data << 4);                                                       
-      |                         ~~~~~    ~~~~~~~~~~^~~~
-main.c(203): warning: implicit conversion loses integer precision: 'int' to 'u8' (aka 'unsigned char') [-Wimplicit-int-conversion]
-  203 |         RS = 0x00 | rs;                                                                                                          
-      |            ~ ~~~~~^~~~
-main.c(230): warning: implicit conversion loses integer precision: 'int' to 'u8' (aka 'unsigned char') [-Wimplicit-int-conversion]
-  230 |                 pos = pos + col;
-      |                     ~ ~~~~^~~~~
-main.c(356): warning: empty expression statement has no effect; remove unnecessary ';' to silence this warning [-Wextra-semi-stmt]
-  356 |                                         }else{;
-      |                                               ^
-main.c(387): warning: mixing declarations and code is a C99 extension [-Wdeclaration-after-statement]
-  387 |         char new_pass[6];
-      |              ^
-main.c(482): warning: implicit conversion changes signedness: 'int' to 'unsigned long' [-Wsign-conversion]
-  482 |                                                 GPIODATA_C &= ~(1 << 5);
-      |                                                            ~~ ^~~~~~~~~
-main.c(53): warning: no previous extern declaration for non-static variable 'read_pw' [-Wmissing-variable-declarations]
-   53 | char read_pw[6];
-      |      ^
-main.c(53): note: declare 'static' if the variable is not intended to be used outside of this translation unit
-   53 | char read_pw[6];
-      | ^
-main.c(54): warning: no previous extern declaration for non-static variable 'check' [-Wmissing-variable-declarations]
-   54 | char check[6];
-      |      ^
-main.c(54): note: declare 'static' if the variable is not intended to be used outside of this translation unit
-   54 | char check[6];
-      | ^
-main.c(83): warning: unsafe buffer access [-Wunsafe-buffer-usage]
-   83 |         buffer[i] = ptr[i];
-      |         ^~~~~~
-main.c(83): warning: unsafe buffer access [-Wunsafe-buffer-usage]
-   83 |         buffer[i] = ptr[i];
-      |                     ^~~
-main.c(103): warning: unsafe buffer access [-Wunsafe-buffer-usage]
-  103 |                 ((unsigned char*)&word)[b] = data[i + b];
-      |                 ^~~~~~~~~~~~~~~~~~~~~~~
-main.c(103): warning: unsafe buffer access [-Wunsafe-buffer-usage]
-  103 |                 ((unsigned char*)&word)[b] = data[i + b];
-      |                                              ^~~~
-main.c(243): warning: unsafe pointer arithmetic [-Wunsafe-buffer-usage]
-  243 |                 temp++;
-      |                 ^~~~
-main.c(335): warning: unsafe buffer access [-Wunsafe-buffer-usage]
-  335 |         for (i = 0; i< 6; i++) check[i] = ' ';
-      |                                ^~~~~
-main.c(340): warning: unsafe buffer access [-Wunsafe-buffer-usage]
-  340 |         for (i = 0; i< 6; i++) if (pass1[i] != pass2[i]) return 0;
-      |                                    ^~~~~
-main.c(340): warning: unsafe buffer access [-Wunsafe-buffer-usage]
-  340 |         for (i = 0; i< 6; i++) if (pass1[i] != pass2[i]) return 0;
-      |                                                ^~~~~
-main.c(367): warning: unsafe buffer access [-Wunsafe-buffer-usage]
-  367 |                                                 check[count - 6] = key;
-      |                                                 ^~~~~
-main.c(398): warning: unsafe buffer access [-Wunsafe-buffer-usage]
-  398 |                                                 new_pass[count - 6] = key;
-      |                                                 ^~~~~~~~
-main.c(442): warning: unsafe buffer access [-Wunsafe-buffer-usage]
-  442 |                                                 check[count - 6] = key;
-      |                                                 ^~~~~
-main.c(492): warning: unsafe buffer access [-Wunsafe-buffer-usage]
-  492 |                                                 check[count - 6] = key;
-      |                                                 ^~~~~
-33 warnings generated.
-compiling main.c...
 linking...
-Program Size: Code=4662 RO-data=826 RW-data=4 ZI-data=624  
-".\Objects\door.axf" - 0 Error(s), 33 Warning(s).
+Program Size: Code=4738 RO-data=826 RW-data=4 ZI-data=624  
+".\Objects\door.axf" - 0 Error(s), 0 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -163,9 +56,9 @@ Package Vendor: Keil
 
    * Component: Keil::Device:Startup:1.0.1
       Include file:  Device/Include/TM4C123/TM4C123.h
-      Source file:   Device/Source/ARM/startup_TM4C123.s
       Source file:   Device/Source/system_TM4C123.c
-Build Time Elapsed:  00:00:01
+      Source file:   Device/Source/ARM/startup_TM4C123.s
+Build Time Elapsed:  00:00:00
 </pre>
 </body>
 </html>
