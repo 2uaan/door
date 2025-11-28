@@ -1,5 +1,6 @@
 typedef unsigned char u8;
 
+//------------------------------------------------------------------------------------------
 #define RCGCGPIO   (*((volatile unsigned long *)0x400FE608))
 
 #define GPIODEN_E  (*((volatile unsigned long *)0x4002451C))
@@ -42,6 +43,7 @@ typedef unsigned char u8;
 #define FLASH_FMC_WRKEY      0xA4420000   // Write key
 
 #define FLASH_USER_DATA_ADDR   0x0003F000
+//------------------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------------------
 void delay(int ms);
@@ -49,6 +51,8 @@ void setup_GPIO(void);
 void setup_I2C(void);
 
 char read_pw[6];
+char check[6];
+int count = 6;
 
 void set_slave_address(u8 slave_address);
 void setRW(u8 mode);
@@ -61,9 +65,10 @@ void display_error(void);
 
 u8 getkey(void);
 void clear_check(void);
-int check_pass(char fl_pass[6]);
+int check_pass(char pass1[6], char pass2[6]);
 void change_pass(void);
 void new_pass(void);
+void submit(char temp_pass[6]);
 
 void flash_write(unsigned long address, unsigned char *data, unsigned int length);
 void flash_read(unsigned long address, unsigned char *buffer, unsigned int length);
@@ -259,7 +264,7 @@ void display_error(void){
 	delay(200);
 	display_string("      ", 1,5);
 	delay(200);
-	display_string("******", 1,5);
+	display_string("......", 1,5);
 }
 
 void I2C_LCD_init(void) {					
@@ -324,44 +329,85 @@ u8 getkey(void){
 	return key;
 }
 
-char check[6];
+
 
 void clear_check(void){
 	unsigned int i;
 	for (i = 0; i< 6; i++) check[i] = ' ';
 }
 
-int check_pass(char fl_pass[6]){
+int check_pass(char pass1[6], char pass2[6]){
 	unsigned int i;
-	for (i = 0; i< 6; i++) if (read_pw[i] != fl_pass[i]) return 0;
+	for (i = 0; i< 6; i++) if (pass1[i] != pass2[i]) return 0;
 	return 1;
 }
 
-void new_pass(void){
-	display_string("|---NEW-PASS---|", 0, 0);
-	display_string("<|******|>", 1, 3);
-	int count = 6;
-	char new_pass[6];
+void submit(char temp_pass[6]){
+	display_string("|----SUBMIT----|", 0, 0);
+	display_string("<B> <......>    ", 1, 0);
+	count = 6;
 	while(1){
 				char key = getkey();
-				if (count == 12) {
-					flash_erase(FLASH_USER_DATA_ADDR);
-					flash_write(FLASH_USER_DATA_ADDR, (unsigned char*)new_pass, 6);
-					break;
+				if (count == 12) {					
+					if (check_pass(temp_pass, check) == 0){
+						count = 0;
+						display_error();
+						count = 6;
+					}else{;
+						flash_erase(FLASH_USER_DATA_ADDR);
+						flash_write(FLASH_USER_DATA_ADDR, (unsigned char*)temp_pass, 6);
+						break;
+					}
 				}
 				if (key != '.'){
 					if (key == '*') {
 						count = 6;
-						display_string("******", 1,5);
+						display_string("......", 1,5);
 					}else if((int)key > 47 && (int)key < 58){
+						check[count - 6] = key;
+						count++;
+						display_character(key, 1, count - 2);
+					}else if(key == 'A'){
+						if (count > 6) {
+							display_character('.', 1, count - 2);
+							count--;
+						}
+					}else if(key == 'B'){
+						break;
+					}
+				}
+        delay(100);
+    }
+}
+
+void new_pass(void){
+	display_string("|---NEW-PASS---|", 0, 0);
+	display_string("<B> <......> <#>", 1, 0);
+	count = 6;
+	char new_pass[6];
+	while(1){
+				char key = getkey();
+				if (count == 12) {
+					
+				}
+				if (key != '.'){
+					if (key == '*') {
+						count = 6;
+						display_string("......", 1,5);
+					}else if((int)key > 47 && (int)key < 58 && count < 12){
 						new_pass[count - 6] = key;
 						count++;
 						display_character(key, 1, count - 2);
 					}else if(key == 'A'){
 						if (count > 6) {
-							display_character('*', 1, count - 2);
+							display_character('.', 1, count - 2);
 							count--;
 						}
+					}else if(key == 'B'){
+						break;
+					}else if(key == '#' && count == 12){
+						submit(new_pass);
+						break;
 					}
 				}
         delay(100);
@@ -370,20 +416,19 @@ void new_pass(void){
 
 void change_pass(void){
 	display_string("|---OLD-PASS---|", 0, 0);
-	display_string("<|******|>", 1, 3);
-	int count_error = 0;
-	int count = 6;
+	display_string("<B> <......>  ", 1, 0);
+	//int count_error = 0;
+	count = 6;
 	while(1){
 				char key = getkey();
 				if (count == 12) {
 					flash_read(FLASH_USER_DATA_ADDR, (unsigned char*)read_pw, 6);
-					int result = check_pass(check);
-					if (result == 0){
+					
+					if (check_pass(read_pw, check) == 0){
 						count = 0;
 						display_error();
 						count = 6;
 					}else{
-						display_string("<Correct.>", 1, 3 );
 						I2C_LCD_send(0x01, 0);
 						new_pass();
 						break;
@@ -392,16 +437,19 @@ void change_pass(void){
 				if (key != '.'){
 					if (key == '*') {
 						count = 6;
-						display_string("******", 1,5);
+						display_string("......", 1,5);
 					}else if((int)key > 47 && (int)key < 58){
 						check[count - 6] = key;
 						count++;
 						display_character(key, 1, count - 2);
+						if (count > 7) display_character('*', 1, count - 3);
 					}else if(key == 'A'){
 						if (count > 6) {
-							display_character('*', 1, count - 2);
+							display_character('.', 1, count - 2);
 							count--;
 						}
+					}else if(key == 'B'){
+						break;
 					}
 				}
         delay(100);
@@ -415,48 +463,45 @@ int main(void){
     set_slave_address(0x27);
 		setRW(0);
     I2C_LCD_init();
-		char num = '.';
 		display_string("|-----DOOR-----|", 0, 0);
-		display_string("<|******|>", 1, 3);
-		int count = 6;
+		display_string("<......>", 1, 4);
+		count = 6;
 		while(1){
 				char key = getkey();
 				if (count == 12) {
 					flash_read(FLASH_USER_DATA_ADDR, (unsigned char*)read_pw, 6);
 					
-					int result = check_pass(check);
-					if (result == 0){
+					if (check_pass(read_pw, check) == 0){
 						count = 0;
 						display_error();
 						count = 6;
 					}else{
-						display_string("<Correct.>", 1, 3 );
+						display_string("<------>", 1, 4 );
 						GPIODATA_C |= (1 << 5);
 						delay(4000);
 						GPIODATA_C &= ~(1 << 5);
-						I2C_LCD_send(0x01, 0);
-						display_string("|-----DOOR-----|", 0, 0);
-						display_string("<|******|>", 1, 3);
+						display_string("<......>", 1, 4);
 						count = 6;
 					}
 				}
 				if (key != '.'){
 					if (key == '*') {
 						count = 6;
-						display_string("******", 1,5);
+						display_string("......", 1,5);
 					}else if((int)key > 47 && (int)key < 58){
 						check[count - 6] = key;
 						count++;
 						display_character(key, 1, count - 2);
+						if (count > 7) display_character('*', 1, count - 3);
 					}else if(key == 'A'){
 						if (count > 6) {
-							display_character('*', 1, count - 2);
+							display_character('.', 1, count - 2);
 							count--;
 						}
-					}else if(key == 'B'){
+					}else if(key == 'C'){
 						change_pass();
 						display_string("|-----DOOR-----|", 0, 0);
-						display_string("<|******|>", 1, 3);
+						display_string("    <......>    ", 1, 0);
 						count = 6;
 					}
 				}
